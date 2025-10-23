@@ -561,80 +561,99 @@
   <!-- ############################################################################################ -->
 
   <script>
-    // Set current year in footer
-    document.getElementById('year').innerText = new Date().getFullYear();
+  // Set current year in footer
+  document.getElementById('year').innerText = new Date().getFullYear();
 
-    // ############### ADD PROJECT FUNCTIONALITY - COMMENT OUT THIS ENTIRE SCRIPT SECTION TO DISABLE ############### 
-    (function() {
-      const addBtn = document.getElementById('addProjectBtn');
-      const modal = document.getElementById('projectModal');
-      const closeBtn = document.getElementById('closeModal');
-      const cancelAdd = document.getElementById('cancelAdd');
-      const confirmAdd = document.getElementById('confirmAdd');
-      const projectsGrid = document.getElementById('projectsGrid');
-      const placeholderCard = document.getElementById('placeholderCard');
+  // Ensure DOM is ready before wiring events
+  document.addEventListener('DOMContentLoaded', function () {
+    const addBtn         = document.getElementById('addProjectBtn');
+    const modal          = document.getElementById('projectModal');
+    const closeBtn       = document.getElementById('closeModal');
+    const cancelAdd      = document.getElementById('cancelAdd');
+    const confirmAdd     = document.getElementById('confirmAdd');
+    const projectsGrid   = document.getElementById('projectsGrid');
+    const placeholderCard= document.getElementById('placeholderCard');
 
-      if (!addBtn || !modal) {
-        console.log('Add project elements not found - feature may be disabled');
-        return;
-      }
+    // If the Add Project feature is hidden/commented out, quietly exit
+    if (!addBtn || !modal || !projectsGrid) return;
 
-      function openModal() {
-        modal.style.display = 'flex';
-        modal.setAttribute('aria-hidden','false');
-        const titleInput = document.getElementById('projTitle');
-        if (titleInput) titleInput.focus();
-      }
+    function openModal() {
+      modal.style.display = 'flex';
+      modal.setAttribute('aria-hidden', 'false');
+      const titleInput = document.getElementById('projTitle');
+      if (titleInput) titleInput.focus();
+      document.body.style.overflow = 'hidden';
+    }
 
-      function closeModalFunc() {
-        modal.style.display = 'none';
-        modal.setAttribute('aria-hidden','true');
-        // Clear form fields
-        ['projTitle','projRepo','projTags','projDesc'].forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.value = '';
-        });
-      }
-
-      addBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        openModal();
+    function closeModalFunc() {
+      modal.style.display = 'none';
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      // Clear fields
+      ['projTitle','projRepo','projTags','projDesc'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.value = '';
       });
+    }
 
-      closeBtn.addEventListener('click', function(e) {
+    // Open/close listeners
+    addBtn.addEventListener('click', function (e) {
+      e.preventDefault();
+      openModal();
+    });
+
+    if (closeBtn) {
+      closeBtn.addEventListener('click', function (e) {
         e.preventDefault();
         closeModalFunc();
       });
+    }
 
-      cancelAdd.addEventListener('click', function(e) {
+    if (cancelAdd) {
+      cancelAdd.addEventListener('click', function (e) {
         e.preventDefault();
         closeModalFunc();
       });
+    }
 
-      confirmAdd.addEventListener('click', function(e) {
+    // Close on ESC
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && modal.style.display === 'flex') {
+        closeModalFunc();
+      }
+    });
+
+    // Close when clicking outside the modal card
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) closeModalFunc();
+    });
+
+    // Confirm add project
+    if (confirmAdd) {
+      confirmAdd.addEventListener('click', function (e) {
         e.preventDefault();
-        
-        const title = document.getElementById('projTitle').value.trim();
-        const repo = document.getElementById('projRepo').value.trim();
-        const tags = document.getElementById('projTags').value.trim();
-        const desc = document.getElementById('projDesc').value.trim();
+
+        const title = (document.getElementById('projTitle') || {}).value?.trim() || '';
+        const repo  = (document.getElementById('projRepo')  || {}).value?.trim() || '';
+        const tags  = (document.getElementById('projTags')  || {}).value?.trim() || '';
+        const desc  = (document.getElementById('projDesc')  || {}).value?.trim() || '';
 
         if (!title) {
           alert('Please add a project title.');
           return;
         }
 
-        // Remove placeholder if it exists
+        // Hide placeholder after first real card
         if (placeholderCard && placeholderCard.style.display !== 'none') {
           placeholderCard.style.display = 'none';
         }
 
-        // Create new project card
+        // Build card
         const card = document.createElement('div');
         card.className = 'project-card';
 
         const top = document.createElement('div');
-        
+
         const titleEl = document.createElement('div');
         titleEl.className = 'project-title';
         if (repo) {
@@ -663,12 +682,15 @@
         const tagsEl = document.createElement('div');
         tagsEl.className = 'tags';
         if (tags) {
-          tags.split(',').map(t => t.trim()).filter(Boolean).forEach(t => {
-            const s = document.createElement('span');
-            s.className = 'tag';
-            s.textContent = t;
-            tagsEl.appendChild(s);
-          });
+          tags.split(',')
+              .map(t => t.trim())
+              .filter(Boolean)
+              .forEach(t => {
+                const s = document.createElement('span');
+                s.className = 'tag';
+                s.textContent = t;
+                tagsEl.appendChild(s);
+              });
         } else {
           const s = document.createElement('span');
           s.className = 'tag';
@@ -690,7 +712,8 @@
         projectsGrid.appendChild(card);
         closeModalFunc();
       });
-
-      // Keyboard escape to close modal
-      document.addEventListener('keydown', function(e) {
-        if (e.key === 'Escape' && modal.style.
+    }
+  });
+</script>
+</body>
+</html>
