@@ -233,6 +233,8 @@
     }
     .project-card:hover::before{opacity:1}
     .project-title{font-weight:700;font-size:15px;position:relative;z-index:1}
+    .project-title a{color:inherit;text-decoration:none}
+    .project-title a:hover{color:var(--accent-light)}
     .project-desc{color:var(--muted);font-size:13px;line-height:1.5;position:relative;z-index:1}
     .tags{display:flex;gap:6px;flex-wrap:wrap;position:relative;z-index:1}
     .tag{
@@ -559,113 +561,136 @@
   <!-- ############################################################################################ -->
 
   <script>
-    // small interactive behaviors
+    // Set current year in footer
     document.getElementById('year').innerText = new Date().getFullYear();
 
     // ############### ADD PROJECT FUNCTIONALITY - COMMENT OUT THIS ENTIRE SCRIPT SECTION TO DISABLE ############### 
-    const addBtn = document.getElementById('addProjectBtn');
-    const modal = document.getElementById('projectModal');
-    const closeBtn = document.getElementById('closeModal');
-    const cancelAdd = document.getElementById('cancelAdd');
-    const confirmAdd = document.getElementById('confirmAdd');
-    const projectsGrid = document.getElementById('projectsGrid');
-    const placeholderCard = document.getElementById('placeholderCard');
+    (function() {
+      const addBtn = document.getElementById('addProjectBtn');
+      const modal = document.getElementById('projectModal');
+      const closeBtn = document.getElementById('closeModal');
+      const cancelAdd = document.getElementById('cancelAdd');
+      const confirmAdd = document.getElementById('confirmAdd');
+      const projectsGrid = document.getElementById('projectsGrid');
+      const placeholderCard = document.getElementById('placeholderCard');
 
-    function openModal() {
-      modal.style.display = 'flex';
-      modal.setAttribute('aria-hidden','false');
-      document.getElementById('projTitle').focus();
-    }
-    function closeModalFunc() {
-      modal.style.display = 'none';
-      modal.setAttribute('aria-hidden','true');
-      // clear
-      ['projTitle','projRepo','projTags','projDesc'].forEach(id => document.getElementById(id).value = '');
-    }
-
-    addBtn.addEventListener('click', openModal);
-    closeBtn.addEventListener('click', closeModalFunc);
-    cancelAdd.addEventListener('click', closeModalFunc);
-
-    confirmAdd.addEventListener('click', () => {
-      const title = document.getElementById('projTitle').value.trim();
-      const repo = document.getElementById('projRepo').value.trim();
-      const tags = document.getElementById('projTags').value.trim();
-      const desc = document.getElementById('projDesc').value.trim();
-
-      if (!title) {
-        alert('Please add a project title.');
+      if (!addBtn || !modal) {
+        console.log('Add project elements not found - feature may be disabled');
         return;
       }
 
-      // remove placeholder if it exists
-      if (placeholderCard) placeholderCard.style.display = 'none';
-
-      // create card
-      const card = document.createElement('div');
-      card.className = 'project-card';
-
-      const top = document.createElement('div');
-      const titleEl = document.createElement('div');
-      titleEl.className = 'project-title';
-      if (repo) {
-        const a = document.createElement('a');
-        a.href = repo;
-        a.target = '_blank';
-        a.rel = 'noopener noreferrer';
-        a.textContent = title;
-        a.style.color = 'inherit';
-        a.style.textDecoration = 'none';
-        titleEl.appendChild(a);
-      } else {
-        titleEl.textContent = title;
+      function openModal() {
+        modal.style.display = 'flex';
+        modal.setAttribute('aria-hidden','false');
+        const titleInput = document.getElementById('projTitle');
+        if (titleInput) titleInput.focus();
       }
 
-      const descEl = document.createElement('div');
-      descEl.className = 'project-desc';
-      descEl.textContent = desc || '—';
+      function closeModalFunc() {
+        modal.style.display = 'none';
+        modal.setAttribute('aria-hidden','true');
+        // Clear form fields
+        ['projTitle','projRepo','projTags','projDesc'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = '';
+        });
+      }
 
-      top.appendChild(titleEl);
-      top.appendChild(descEl);
+      addBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        openModal();
+      });
 
-      const bottom = document.createElement('div');
-      bottom.style.display = 'flex';
-      bottom.style.justifyContent = 'space-between';
-      bottom.style.alignItems = 'center';
+      closeBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        closeModalFunc();
+      });
 
-      const tagsEl = document.createElement('div');
-      tagsEl.className = 'tags';
-      if (tags) {
-        tags.split(',').map(t => t.trim()).filter(Boolean).forEach(t => {
+      cancelAdd.addEventListener('click', function(e) {
+        e.preventDefault();
+        closeModalFunc();
+      });
+
+      confirmAdd.addEventListener('click', function(e) {
+        e.preventDefault();
+        
+        const title = document.getElementById('projTitle').value.trim();
+        const repo = document.getElementById('projRepo').value.trim();
+        const tags = document.getElementById('projTags').value.trim();
+        const desc = document.getElementById('projDesc').value.trim();
+
+        if (!title) {
+          alert('Please add a project title.');
+          return;
+        }
+
+        // Remove placeholder if it exists
+        if (placeholderCard && placeholderCard.style.display !== 'none') {
+          placeholderCard.style.display = 'none';
+        }
+
+        // Create new project card
+        const card = document.createElement('div');
+        card.className = 'project-card';
+
+        const top = document.createElement('div');
+        
+        const titleEl = document.createElement('div');
+        titleEl.className = 'project-title';
+        if (repo) {
+          const a = document.createElement('a');
+          a.href = repo;
+          a.target = '_blank';
+          a.rel = 'noopener noreferrer';
+          a.textContent = title;
+          titleEl.appendChild(a);
+        } else {
+          titleEl.textContent = title;
+        }
+
+        const descEl = document.createElement('div');
+        descEl.className = 'project-desc';
+        descEl.textContent = desc || 'No description provided';
+
+        top.appendChild(titleEl);
+        top.appendChild(descEl);
+
+        const bottom = document.createElement('div');
+        bottom.style.display = 'flex';
+        bottom.style.justifyContent = 'space-between';
+        bottom.style.alignItems = 'center';
+
+        const tagsEl = document.createElement('div');
+        tagsEl.className = 'tags';
+        if (tags) {
+          tags.split(',').map(t => t.trim()).filter(Boolean).forEach(t => {
+            const s = document.createElement('span');
+            s.className = 'tag';
+            s.textContent = t;
+            tagsEl.appendChild(s);
+          });
+        } else {
           const s = document.createElement('span');
           s.className = 'tag';
-          s.textContent = t;
+          s.textContent = 'General';
           tagsEl.appendChild(s);
-        });
-      } else {
-        const s = document.createElement('span');
-        s.className = 'tag';
-        s.textContent = 'Uncategorized';
-        tagsEl.appendChild(s);
-      }
+        }
 
-      const meta = document.createElement('div');
-      meta.style.fontSize='12px';
-      meta.style.color='var(--muted)';
-      meta.textContent = new Date().getFullYear();
+        const meta = document.createElement('div');
+        meta.style.fontSize = '12px';
+        meta.style.color = 'var(--muted)';
+        meta.textContent = new Date().getFullYear();
 
-      bottom.appendChild(tagsEl);
-      bottom.appendChild(meta);
+        bottom.appendChild(tagsEl);
+        bottom.appendChild(meta);
 
-      card.appendChild(top);
-      card.appendChild(bottom);
+        card.appendChild(top);
+        card.appendChild(bottom);
 
-      projectsGrid.appendChild(card);
-      closeModalFunc();
-    });
+        projectsGrid.appendChild(card);
+        closeModalFunc();
+      });
 
-    // keyboard escape to close modal
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && modal.style.display === 'flex') closeModalFunc();
-    });
-    // #############################################################################################################
+      // Keyboard escape to close modal
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.style.
