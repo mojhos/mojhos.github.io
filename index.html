@@ -397,47 +397,55 @@
         </section>
 
         <section class="panel" aria-labelledby="projects">
-          <div class="section-title">
-            <h3 id="projects">Projects</h3>
-            <div class="small-muted">Portfolio Showcase</div>
-          </div>
+  <div class="section-title">
+    <h3 id="projects">Projects</h3>
+    <div class="small-muted">Portfolio Showcase</div>
+  </div>
 
-          <div class="projects-grid" id="projectsGrid">
-            <!-- Placeholder card if no projects exist -->
-            <div class="project-card" id="placeholderCard">
-              <div>
-                <div class="project-title">No projects yet</div>
-                <div class="project-desc">You can add project entries using the "Add Project" button. Projects show title, short description, tags and a GitHub link.</div>
-              </div>
-              <div style="display:flex;justify-content:space-between;align-items:center">
-                <div class="tags"><span class="tag">DevOps</span><span class="tag">Kubernetes</span></div>
-                <div style="font-size:12px;color:var(--muted)">Template</div>
-              </div>
-            </div>
+  <div class="projects-grid">
+    <!-- Project 1 -->
+    <div class="project-card">
+      <div>
+        <div class="project-title">
+          <a href="https://github.com/mojhos/AWS_Devops" target="_blank" rel="noopener noreferrer">
+            Scalable Web Application with Auto-Healing on AWS
+          </a>
+        </div>
+        <div class="project-desc">
+          This graduate-level DevOps project demonstrates designing secure, fault-tolerant, production-grade infrastructure on AWS.
+          It automates provisioning using Terraform (IaC), containerizes a Java web app with Docker, and deploys it through a
+          CI/CD pipeline using Jenkins and Amazon ECR.  
+          <br><br>
+          The system is <strong>highly available</strong> across multiple AZs, <strong>self-healing</strong> through ASG and CloudWatch,
+          and <strong>automated</strong> end-to-end from code commit to deployment.
+        </div>
+        <div style="margin-top:10px;text-align:center">
+          <img src="project_architecture.jpg" alt="AWS Architecture Diagram"
+               style="max-width:100%;border-radius:10px;border:1px solid rgba(255,255,255,0.05)">
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px">
+        <div class="tags">
+          <span class="tag">AWS</span>
+          <span class="tag">Terraform</span>
+          <span class="tag">Docker</span>
+          <span class="tag">Jenkins</span>
+          <span class="tag">CI/CD</span>
+        </div>
+        <a href="https://github.com/mojhos/AWS_Devops"
+           target="_blank"
+           rel="noopener noreferrer"
+           class="btn ghost"
+           style="font-size:12px;padding:6px 10px;">
+          View on GitHub
+        </a>
+      </div>
+    </div>
+  </div>
 
-            <!-- Example project card (comment/uncomment or duplicate to hardcode projects)
-            <div class="project-card">
-              <div>
-                <div class="project-title">Example: CI/CD for Web App</div>
-                <div class="project-desc">Automated build and deploy pipeline using GitLab CI, Docker and Terraform for infra.</div>
-              </div>
-              <div style="display:flex;justify-content:space-between;align-items:center">
-                <div class="tags"><a class="tag" href="https://github.com/mojhos/example" target="_blank">GitHub</a></div>
-                <div style="font-size:12px;color:var(--muted)">2025</div>
-              </div>
-            </div>
-            -->
+  <!-- Optional: future static cards can go below -->
+</section>
 
-          </div>
-
-          <div style="margin-top:14px;display:flex;gap:8px">
-            <!-- ############### ADD PROJECT BUTTON - COMMENT OUT THIS SECTION TO HIDE ############### -->
-            <button class="btn highlight-glow" id="addProjectBtn">✨ Add Project</button>
-            <!-- ###################################################################################### -->
-            
-            <a class="btn ghost" href="https://github.com/mojhos" target="_blank" rel="noopener">View GitHub</a>
-          </div>
-        </section>
 
         <section class="panel" aria-labelledby="experience">
           <div class="section-title">
